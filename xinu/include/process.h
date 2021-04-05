@@ -25,7 +25,7 @@
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
-#define	INITPRIO	45	/* Initial process priority		*/
+#define	INITPRIO	20	/* Initial process priority		*/
 #define	INITRET		userret	/* Address to which process returns	*/
 
 /* Inline code to check process ID (assumes interrupts are disabled)	*/
@@ -60,7 +60,4 @@ struct procent {		/* Entry in the process table		*/
 extern	struct	procent proctab[];
 extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
-extern	pid32	pid_sensor[3];	/* Store Sensor pid			*/
-extern	pid32	pid_actutator[2];	/* Store actutator pid			*/
-extern	int32	scheduling_policy;	/* flag for scheduling policy */
-extern	int32	total_tickets;	/* total_tickets */
+extern 	int32	scheduling_policy;

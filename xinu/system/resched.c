@@ -3,7 +3,6 @@
 #include <xinu.h>
 
 struct	defer	Defer;
-int count = 0;
 
 /*------------------------------------------------------------------------
  *  resched  -  Reschedule processor to highest priority eligible process
@@ -25,10 +24,6 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	ptold = &proctab[currpid];
 
-	if(scheduling_policy == 0)
-	{
-	
-	//kprintf("\n priority Scheduling \n");	
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
 		if (ptold->prprio > firstkey(readylist)) {
 			return;
@@ -43,46 +38,9 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	/* Force context switch to highest priority ready process */
 
 	currpid = dequeue(readylist);
-	
-	}
-
-	else if(count % 5 !=0)
-	{
-	count++;
-	kprintf("\n Random Scheduling \n");
-	
-	int32 num = rand();
-	num = num % total_tickets;
-	//int32 num = 80;	
-
-	kprintf("\nRandom number : %d \n",num);	
-
-	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
-		
-		/* Old process will no longer remain current */
-
-		ptold->prstate = PR_READY;
-		insert(currpid, readylist, ptold->prprio);
-	}
-
-	/* Force context switch to highest priority ready process */
-
-	currpid = dequeue_process(readylist, num);
-	
-	}
-	else 
-	{
-	// code for scheduling actuator. 
-	currpid = 10;
-	count++;
-	}
-	
 	ptnew = &proctab[currpid];
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
-
-	//kprintf("\n context switch : %s -> %s \n", ptold->prname , ptnew->prname);
-
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 
 	/* Old process returns here when resumed */

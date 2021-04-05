@@ -25,11 +25,8 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
-pid32	pid_sensor[3];	/* Store Sensor pid	*/
-pid32	pid_actutator[2];	/* Store actutator pid			*/	
-int32	scheduling_policy;	/* flag for scheduling policy */	
-int32	total_tickets;	/* total_tickets */
 
+int32	scheduling_policy;
 /* Control sequence to reset the console colors and cusor positiion	*/
 
 #define	CONSOLE_RESET	" \033[0m\033[2J\033[;H"
@@ -171,12 +168,13 @@ static	void	sysinit()
 	/* Count the Null process as the first process in the system */
 
 	prcount = 1;
-	scheduling_policy = 0; /* 0 default priority scheduling */
 
 	/* Scheduling is not currently blocked */
 
 	Defer.ndefers = 0;
 
+	scheduling_policy = 4;
+	kprintf("%d",scheduling_policy);
 	/* Initialize process table entries free */
 
 	for (i = 0; i < NPROC; i++) {
@@ -191,7 +189,7 @@ static	void	sysinit()
 
 	prptr = &proctab[NULLPROC];
 	prptr->prstate = PR_CURR;
-	prptr->prprio = 10;
+	prptr->prprio = 0;
 	strncpy(prptr->prname, "prnull", 7);
 	prptr->prstkbase = getstk(NULLSTK);
 	prptr->prstklen = NULLSTK;

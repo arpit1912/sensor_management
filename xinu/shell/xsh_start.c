@@ -10,10 +10,7 @@
  */
 shellcmd xsh_start(int nargs, char *args[])
 {
-	resume(pid_sensor[0]);
-	resume(pid_sensor[1]);
-	resume(pid_sensor[2]);
-	
+	kprintf("scheduling policy is working");
 	scheduling_policy = 1;
 	
 	return 0;
