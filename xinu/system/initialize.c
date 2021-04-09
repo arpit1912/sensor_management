@@ -26,7 +26,23 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
 
-int32	scheduling_policy;
+int32   OccupiedBuffs[3];
+bpid32  PoolId[3];
+pid32	pid_sensor[3];	/* Store Sensor pid	*/
+pid32	pid_actutator[2];	/* Store actutator pid			*/	
+int32	scheduling_policy;	/* flag for scheduling policy */	
+int32	total_tickets;	/* total_tickets */
+
+char* ABuffAddr[SensorABuffSize];
+int APriority[SensorABuffSize];
+
+char* BBuffAddr[SensorBBuffSize];
+int BPriority[SensorBBuffSize];
+
+char* CBuffAddr[SensorCBuffSize];
+int CPriority[SensorCBuffSize];
+
+
 /* Control sequence to reset the console colors and cusor positiion	*/
 
 #define	CONSOLE_RESET	" \033[0m\033[2J\033[;H"
@@ -173,8 +189,8 @@ static	void	sysinit()
 
 	Defer.ndefers = 0;
 
-	scheduling_policy = 4;
-	kprintf("%d",scheduling_policy);
+	scheduling_policy = 0;
+
 	/* Initialize process table entries free */
 
 	for (i = 0; i < NPROC; i++) {

@@ -37,8 +37,8 @@ extern	shellcmd  xsh_kill	(int32, char *[]);
 /* in file xsh_led.c */
 extern	shellcmd  xsh_led	(int32, char *[]);
 
-/* in file xsh_memdump.c */
-extern	shellcmd  xsh_memdump	(int32, char *[]);
+/* in file xsh_start.c */
+extern	shellcmd  xsh_start	(int32, char *[]);
 
 /* in file xsh_memstat.c */
 extern	shellcmd  xsh_memstat	(int32, char *[]);

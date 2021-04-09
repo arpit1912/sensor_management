@@ -1,0 +1,10 @@
+{
+    "files.associations": {
+        "xinu.h": "c",
+        "process.h": "c",
+        "device.h": "c",
+        "*.tcc": "c",
+        "cstdlib": "c"
+    },
+    "C_Cpp.errorSquiggles": "Disabled"
+}
