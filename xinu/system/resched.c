@@ -3,7 +3,6 @@
 #include <xinu.h>
 
 struct	defer	Defer;
-int count = 0;
 
 /*------------------------------------------------------------------------
  *  resched  -  Reschedule processor to highest priority eligible process
@@ -46,9 +45,8 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	
 	}
 
-	else if(count % 5 !=0)
+	else
 	{
-	count++;
 	kprintf("\n Random Scheduling \n");
 	
 	int32 num = rand();
@@ -69,12 +67,6 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	currpid = dequeue_process(readylist, num);
 	
-	}
-	else 
-	{
-	// code for scheduling actuator. 
-	currpid = 10;
-	count++;
 	}
 	
 	ptnew = &proctab[currpid];

@@ -18,7 +18,7 @@ const	struct	cmdent	cmdtab[] = {
 	{"exit",	TRUE,	xsh_exit},
 	{"help",	FALSE,	xsh_help},
 	{"kill",	TRUE,	xsh_kill},
-	{"memdump",	FALSE,	xsh_memdump},
+	{"start",	FALSE,	xsh_start},
 	{"memstat",	FALSE,	xsh_memstat},
 	{"netinfo",	FALSE,	xsh_netinfo},
 	{"ping",	FALSE,	xsh_ping},
@@ -88,13 +88,6 @@ process	shell (
 					/*   builtin commands		*/
 
 	/* Print shell banner and startup message */
-
-	fprintf(dev, "\n\n%s%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n",
-		SHELL_BAN0,SHELL_BAN1,SHELL_BAN2,SHELL_BAN3,SHELL_BAN4,
-		SHELL_BAN5,SHELL_BAN6,SHELL_BAN7,SHELL_BAN8,SHELL_BAN9);
-
-	fprintf(dev, "%s\n\n", SHELL_STRTMSG);
-
 	/* Continually prompt the user, read input, and execute command	*/
 
 	while (TRUE) {

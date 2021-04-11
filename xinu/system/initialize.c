@@ -25,10 +25,23 @@ struct	memblk	memlist;	/* List of free memory blocks		*/
 
 int	prcount;		/* Total number of live processes	*/
 pid32	currpid;		/* ID of currently executing process	*/
+
+int32   OccupiedBuffs[3];
+bpid32  PoolId[3];
 pid32	pid_sensor[3];	/* Store Sensor pid	*/
 pid32	pid_actutator[2];	/* Store actutator pid			*/	
 int32	scheduling_policy;	/* flag for scheduling policy */	
 int32	total_tickets;	/* total_tickets */
+
+char* ABuffAddr[SensorABuffSize];
+int APriority[SensorABuffSize];
+
+char* BBuffAddr[SensorBBuffSize];
+int BPriority[SensorBBuffSize];
+
+char* CBuffAddr[SensorCBuffSize];
+int CPriority[SensorCBuffSize];
+
 
 /* Control sequence to reset the console colors and cusor positiion	*/
 
@@ -171,11 +184,12 @@ static	void	sysinit()
 	/* Count the Null process as the first process in the system */
 
 	prcount = 1;
-	scheduling_policy = 0; /* 0 default priority scheduling */
 
 	/* Scheduling is not currently blocked */
 
 	Defer.ndefers = 0;
+
+	scheduling_policy = 0;
 
 	/* Initialize process table entries free */
 
@@ -191,7 +205,7 @@ static	void	sysinit()
 
 	prptr = &proctab[NULLPROC];
 	prptr->prstate = PR_CURR;
-	prptr->prprio = 10;
+	prptr->prprio = 0;
 	strncpy(prptr->prname, "prnull", 7);
 	prptr->prstkbase = getstk(NULLSTK);
 	prptr->prstklen = NULLSTK;

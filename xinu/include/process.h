@@ -22,6 +22,10 @@
 #define	PNMLEN		16	/* Length of process "name"		*/
 #define	NULLPROC	0	/* ID of the null process		*/
 
+#define SensorABuffSize 4
+#define SensorBBuffSize 2
+#define SensorCBuffSize 1
+
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
@@ -60,7 +64,21 @@ struct procent {		/* Entry in the process table		*/
 extern	struct	procent proctab[];
 extern	int32	prcount;	/* Currently active processes		*/
 extern	pid32	currpid;	/* Currently executing process		*/
+extern 	int32	scheduling_policy;
+
+extern 	int32   OccupiedBuffs[3];
+extern  bpid32  PoolId[3];
 extern	pid32	pid_sensor[3];	/* Store Sensor pid			*/
 extern	pid32	pid_actutator[2];	/* Store actutator pid			*/
 extern	int32	scheduling_policy;	/* flag for scheduling policy */
 extern	int32	total_tickets;	/* total_tickets */
+
+// Buff for the three sensors
+extern char* ABuffAddr[SensorABuffSize];
+extern int APriority[SensorABuffSize];
+
+extern char* BBuffAddr[SensorBBuffSize];
+extern int BPriority[SensorBBuffSize];
+
+extern char* CBuffAddr[SensorCBuffSize];
+extern int CPriority[SensorCBuffSize];

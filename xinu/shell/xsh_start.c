@@ -1,20 +1,26 @@
-/* xsh_ps.c - xsh_ps */
+/* xsh_start.c - xsh_start */
 
 #include <xinu.h>
-#include <stdio.h>
 #include <string.h>
+#include <stdio.h>
+
+static	uint32	parseval(char *);
+extern	uint32	start;
 
 /*------------------------------------------------------------------------
- * xsh_ps - shell command to print the process table
+ * xsh_start - shell command to start the system
  *------------------------------------------------------------------------
  */
 shellcmd xsh_start(int nargs, char *args[])
 {
+	printf("starting the process here : \n");
 	resume(pid_sensor[0]);
 	resume(pid_sensor[1]);
 	resume(pid_sensor[2]);
-	
+	resume(pid_actutator[0]);
+	resume(pid_actutator[1]);
+
 	scheduling_policy = 1;
-	
+
 	return 0;
 }
