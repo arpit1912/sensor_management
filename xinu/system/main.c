@@ -9,8 +9,6 @@ void actuatorA(sid32), actuatorB(sid32);
 // int APriority[4];	// For storing the APriority of the Buffers
 int buffCount = 0;	// for keeping track of filled buffers
 
-// for global clock use clktime
-// OccupiedBuffs array will store the allocated Buff At Each point
 
 sid32 a,b,c,a1,b1,c1;
 
@@ -40,17 +38,12 @@ process	main(void)
 	
 	pid_sensor[0]=create(sensorA, 1024, 40, "sensor_1",2,a,a1);
 
-
 	pid_sensor[1]=create(sensorB, 1024, 30, "sensor_2",2,b,b1);
-
-	//resume(pid_sensor[1]);
 
 	pid_sensor[2]=create(sensorC, 1024, 20, "sensor_3",2,c,c1);
 
-
-	// resume(pid_sensor[2]);
-
 	pid_actutator[0]=create(actuatorA, 1024, 15, "actuator_1",1,b1);
+
 	// resume(pid_actutator[0]);
 
 	pid_actutator[1]=create(actuatorB, 1024, 15, "actuator_2",2,a1,c1);
@@ -72,36 +65,77 @@ void sensorA(sid32 a, sid32 b){
 
 	PoolId[0] = mkbufpool(SizePerBuff + 4,SensorABuffSize);
 	OccupiedBuffs[0] = 0;
+	int32 start = 70;
+	int32 offset = 20;
+	while(1){
 
-	int i = 0;	
-	while(i<10){
+			if(clktime % 3 == 0){
+					kprintf("New Entry coming at %d\n",clktime);
+					struct data *p = CreateBuff(PoolId[0], &OccupiedBuffs[0],SensorABuffSize,ABuffAddr,APriority);
+					p->first = 70 + rand()%offset;
 
-			struct data *p = CreateBuff(PoolId[0], &OccupiedBuffs[0],SensorABuffSize,ABuffAddr,APriority);
-			printf(" Occupied count is : %d \n ",OccupiedBuffs[0]);
-
-			// int j=0;		
-			// // The Given below Code will print the Buffer
-			// // Testing purposes
-			// while(j<OccupiedBuffs[0]){
-			// 	struct data* temp = (struct data*) ABuffAddr[j];
-			// 	kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
-			// 	j++;	
-			// }
-
-			i++;
-
+					int j = 0;
+					while(j<OccupiedBuffs[0]){
+						struct data* temp = (struct data*) ABuffAddr[j];
+						kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
+						j++;	
+					}
+					sleepms(1000);
+			}
 	}
 	printf("Process A Completed");
 }
 
 
 void sensorB(sid32 a, sid32 b){
-	printf("Process B");
+	
+	PoolId[1] = mkbufpool(SizePerBuff + 4,SensorBBuffSize);
+	OccupiedBuffs[1] = 0;
+	int32 start = 80;
+	int32 offset = 30;
+	while(1){
+
+			if(clktime % 5 == 0){
+					kprintf("New Entry coming at %d\n",clktime);
+					struct data *p = CreateBuff(PoolId[1], &OccupiedBuffs[1],SensorBBuffSize,BBuffAddr,BPriority);
+					p->first = 70 + rand()%offset;
+
+					int j = 0;
+					while(j<OccupiedBuffs[1]){
+						struct data* temp = (struct data*) BBuffAddr[j];
+						kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
+						j++;	
+					}
+					sleepms(2000);
+			}
+	}
+	printf("Process B Completed");
 }
 
 
 void sensorC(sid32 a, sid32 b){
-	printf("Process C");
+
+	PoolId[2] = mkbufpool(SizePerBuff + 4,SensorCBuffSize);
+	OccupiedBuffs[2] = 0;
+	int32 start = 20;
+	int32 offset = 50;
+	while(1){
+
+			if(clktime % 7 == 0){
+					kprintf("New Entry coming at %d\n",clktime);
+					struct data *p = CreateBuff(PoolId[2], &OccupiedBuffs[2],SensorCBuffSize,CBuffAddr,CPriority);
+					p->first = 70 + rand()%offset;
+
+					int j = 0;
+					while(j<OccupiedBuffs[2]){
+						struct data* temp = (struct data*) CBuffAddr[j];
+						kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
+						j++;	
+					}
+					sleepms(3000);
+			}
+	}
+	printf("Process c Completed");
 }
 
 

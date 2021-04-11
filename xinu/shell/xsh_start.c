@@ -15,7 +15,7 @@ shellcmd xsh_start(int nargs, char *args[])
 {
 	printf("starting the process here : \n");
 
-	resume(pid_sensor[0]);
+	resume(pid_sensor[2]);
 
 	return 0;
 }
