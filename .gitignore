@@ -42,6 +42,9 @@
 *.idb
 *.pdb
 
+# Compressed files
+*.tar
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd

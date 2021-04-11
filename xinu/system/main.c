@@ -5,12 +5,9 @@
 void sensorA(sid32,sid32), sensorB(sid32,sid32), sensorC(sid32,sid32);
 void actuatorA(sid32), actuatorB(sid32);
 
-// Sensor's Buff Size
-
-#define SensorABuffSize 4
-#define SensorBBuffSize 2
-#define SensorCBuffSize 1
-
+// char* ABuffAddr[4];	// For keeping track of the Buffers
+// int APriority[4];	// For storing the APriority of the Buffers
+int buffCount = 0;	// for keeping track of filled buffers
 
 // for global clock use clktime
 // OccupiedBuffs array will store the allocated Buff At Each point
@@ -24,7 +21,8 @@ struct data{
 };
 
 
-struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* BuffAddr[], int* Priority);
+struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* ABuffAddr[], int* APriority);
+// struct data* CreateBuff(bpid32);
 
 #define SizePerBuff sizeof(struct data)
 
@@ -72,33 +70,28 @@ process	main(void)
 
 void sensorA(sid32 a, sid32 b){
 
-	printf("Size of each buff is: %d\n",SizePerBuff);
-	PoolId[0] = mkbufpool(SizePerBuff,SensorABuffSize);
-	kprintf("The Pool id is %d\n",PoolId[0]);
+	PoolId[0] = mkbufpool(SizePerBuff + 4,SensorABuffSize);
 	OccupiedBuffs[0] = 0;
+
 	int i = 0;	
 	while(i<10){
-
-
-			printf("Trial number %d\n\n", i);
 
 			struct data *p = CreateBuff(PoolId[0], &OccupiedBuffs[0],SensorABuffSize,ABuffAddr,APriority);
 			printf(" Occupied count is : %d \n ",OccupiedBuffs[0]);
 
-			int temp = 0;
-
-			while(temp < SensorABuffSize){
-				printf(" Entry %d has address %s and %d priority \n",temp, ABuffAddr[temp], APriority[temp]);
-
-				temp++;
-			}
+			// int j=0;		
+			// // The Given below Code will print the Buffer
+			// // Testing purposes
+			// while(j<OccupiedBuffs[0]){
+			// 	struct data* temp = (struct data*) ABuffAddr[j];
+			// 	kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
+			// 	j++;	
+			// }
 
 			i++;
 
 	}
 	printf("Process A Completed");
-
-
 }
 
 
@@ -121,19 +114,17 @@ void actuatorB(sid32 a){
 	printf("Actuactor B");
 }
 
-struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* BuffAddr[], int* Priority){	// This function take care of the LRU policy while Allocation and Deallocation in Buffer
+struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* ABuffAddr[], int* APriority){	// This function take care of the LRU policy while Allocation and Deallocation in Buffer
 	
 	if(*buffCount < MaxSize){
-		printf("working till here! %d \n", *buffCount);
 		char* pt = getbuf(id);
-		BuffAddr[*buffCount] = pt;
-		Priority[*buffCount] = -1;
+		ABuffAddr[*buffCount] = pt;
+		APriority[*buffCount] = -1;
 		int i = 0;	
 		while(i <= *buffCount){
-			Priority[i++]++;	// Increasing the Priority Number higher number will get removed first
+			APriority[i++]++;	// Increasing the APriority Number higher number will get removed first
 		}
-		printf("working after assigning \n");
-		return (struct data*)BuffAddr[(*buffCount)++];	// Returning the Buffer Addr 
+		return (struct data*)ABuffAddr[(*buffCount)++];	// Returning the Buffer Addr 
 	}
 	else{
 		int i = 0;
@@ -141,29 +132,22 @@ struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* BuffAddr[],
 		
 		while(i<MaxSize){
 			
-			if(Priority[i]> Priority[max_index]){
+			if(APriority[i]> APriority[max_index]){
 				max_index = i;	// finding the LRU buffer The max priority buffer will be the least recent one
 			}
 			i++;
 		}		
-		
-		printf("working on fully filled! %d  %d \n", *buffCount, max_index);
-		printf("The free address is : %d \n", BuffAddr[max_index]);
-		freebuf(BuffAddr[max_index]);	// making the buffer free
 
-		printf("working on fully filled! %d  %d \n", *buffCount, max_index);
-		Priority[max_index] = -1;
+		freebuf(ABuffAddr[max_index]);	// making the buffer free
+		APriority[max_index] = -1;
 
-
-		printf("working on fully filled! %d  %d \n", *buffCount, max_index);
-
-		BuffAddr[max_index] = getbuf(id);	// allocating the Buffer again
+		ABuffAddr[max_index] = getbuf(id);	// allocating the Buffer again
 		kprintf("\nnew buffer is allocated at %d \n",max_index);
 		i = 0;	
 		while(i < *buffCount){
-			Priority[i++]++;	// Increasing the Priority Number
+			APriority[i++]++;	// Increasing the APriority Number
 		}
-		return (struct data*)BuffAddr[max_index];	// Returning the Buffer Addr
+		return (struct data*)ABuffAddr[max_index];	// Returning the Buffer Addr
 
 	}
 }
