@@ -37,3 +37,38 @@ syscall	wait(
 	restore(mask);
 	return OK;
 }
+
+syscall	dinkar(
+	  sid32		sem		/* Semaphore on which to wait  */
+	)
+{
+	intmask mask;			/* Saved interrupt mask		*/
+	struct	procent *prptr;		/* Ptr to process's table entry	*/
+	struct	sentry *semptr;		/* Ptr to sempahore table entry	*/
+
+	mask = disable();
+	if (isbadsem(sem)) {
+		restore(mask);
+		return SYSERR;
+	}
+
+	semptr = &semtab[sem];
+	if (semptr->sstate == S_FREE) {
+		restore(mask);
+		return SYSERR;
+	}
+
+	if ((semptr->scount) <= 0) {		/* If caller must block	*/
+		prptr = &proctab[currpid];
+		prptr->prstate = PR_WAIT;	/* Set state to waiting	*/
+		prptr->prsem = sem;		/* Record semaphore ID	*/
+		enqueue(currpid,semptr->squeue);/* Enqueue on semaphore	*/
+		resched();			/*   and reschedule	*/
+	}
+	else{
+		--(semptr->scount);
+	}
+	restore(mask);
+	return OK;
+}
+

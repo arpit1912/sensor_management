@@ -47,13 +47,10 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	else
 	{
-	kprintf("\n Random Scheduling \n");
-	
-	int32 num = rand();
-	num = num % total_tickets;
+
+	int32 num = 1 + rand();
 	//int32 num = 80;	
 
-	kprintf("\nRandom number : %d \n",num);	
 
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
 		
@@ -65,8 +62,12 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	/* Force context switch to highest priority ready process */
 
+	total_tickets = arpit(readylist);
+	num = num % total_tickets;
+
+	kprintf("\nRandom number : %d  %d \n",num, total_tickets);	
+
 	currpid = dequeue_process(readylist, num);
-	
 	}
 	
 	ptnew = &proctab[currpid];

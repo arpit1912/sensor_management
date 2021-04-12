@@ -51,6 +51,40 @@ pid32	dequeue(
 	return pid;
 }
 
+int32 arpit(qid16 q){
+	
+	int32 ticket_count = 0;			/* ID of process removed	*/
+	//kprintf("\nIt entered \n");
+
+	if (isbadqid(q)) {
+		return SYSERR;
+	} else if (isempty(q)) {
+		return EMPTY;
+	}
+
+	int16	curr;			/* Runs through items in a queue*/
+	int16	prev;			/* Holds previous node index	*/
+	int16	next;			/* holds next node */
+
+	int16 last = lastid(q);
+	//kprintf("\n %d %d %d \n", last,queuetab[last].qkey,ticket_count);
+	curr = firstid(q);
+	while(1)
+	{
+		if(curr != last)
+			{
+				//kprintf("\n %d %d %d \n", curr,queuetab[curr].qkey,ticket_count);
+				ticket_count += queuetab[curr].qkey;
+				curr = queuetab[curr].qnext;
+			}
+		else
+			{
+				break;		
+			}
+
+	}
+	return ticket_count;
+}
 /*------------------------------------------------------------------------
  *  dequeue  -  Remove and return the process from list
  *------------------------------------------------------------------------
@@ -73,6 +107,7 @@ pid32	dequeue_process(
 	int16	next;			/* holds next node */
 
 	curr = firstid(q);
+
 	while(1)
 	{
 		if(num < queuetab[curr].qkey)

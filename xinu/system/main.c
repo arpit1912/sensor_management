@@ -12,6 +12,7 @@ int buffCount = 0;	// for keeping track of filled buffers
 
 sid32 a,b,c,a1,b1,c1;
 
+sid32 d1;
 int32 v1=180,v2=60,v3=40;
 
 struct data{
@@ -37,7 +38,6 @@ process	main(void)
 	a1 = semcreate(0);
 	b1 = semcreate(0);
 	c1 = semcreate(0);
-	
 	pid_sensor[0]=create(sensorA, 1024, 40, "sensor_1",2,a,a1);
 
 	pid_sensor[1]=create(sensorB, 1024, 30, "sensor_2",2,b,b1);
@@ -49,13 +49,13 @@ process	main(void)
 	pid_actutator[1]=create(actuatorB, 1024, 15, "actuator_2",2,a1,c1);
 	/* Wait for shell to exit and recreate it */
 
-	resume(pid_sensor[0]);
+	//resume(pid_sensor[0]);
 	resume(pid_sensor[1]);
-	resume(pid_sensor[2]);
+	//resume(pid_sensor[2]);
 	resume(pid_actutator[0]);
-	resume(pid_actutator[1]);
+	//resume(pid_actutator[1]);
 
-	total_tickets = 120;
+	total_tickets = 55;
 	scheduling_policy = 1;
 	
 
@@ -86,13 +86,13 @@ void sensorA(sid32 a, sid32 b){
 					signal(a);
 					signal(b);
 
-					int j = 0;
-					while(j<OccupiedBuffs[0]){
-						struct data* temp = (struct data*) ABuffAddr[j];
-						kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
-						j++;	
-					}
-					sleepms(1000);
+					// int j = 0;
+					// while(j<OccupiedBuffs[0]){
+					// 	struct data* temp = (struct data*) ABuffAddr[j];
+					// 	kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
+					// 	j++;	
+					// }
+					//sleepms(1000);
 			}
 	}
 	printf("Process A Completed");
@@ -105,24 +105,30 @@ void sensorB(sid32 a, sid32 b){
 	OccupiedBuffs[1] = 0;
 	int32 start = 80;
 	int32 offset = 30;
+	int t = 500;
 	while(1){
 
 			if(clktime % 5 == 0){
-					kprintf("New Entry coming at %d\n",clktime);
+					//kprintf("New Entry coming at %d\n",clktime);
 					struct data *p = CreateBuff(PoolId[1], &OccupiedBuffs[1],SensorBBuffSize,BBuffAddr,BPriority);
 					
 					wait(a);
 					p->first = 70 + rand()%offset;
+					//kprintf(" giving output %d \n", p->first);
 					signal(a);
-					signal(b);
-
-					int j = 0;
-					while(j<OccupiedBuffs[1]){
-						struct data* temp = (struct data*) BBuffAddr[j];
-						kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
-						j++;	
+					if( semtab[b].scount <= 0){
+						kprintf("Semaphore value 1: %d\n",semtab[b].scount);
+						shreyansh(b);
+						kprintf("Semaphore value 2: %d\n",semtab[b].scount);
 					}
-					sleepms(2000);
+					
+					// int j = 0;
+					// while(j<OccupiedBuffs[1]){
+					// 	struct data* temp = (struct data*) BBuffAddr[j];
+					// 	kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
+					// 	j++;	
+					// }
+					//sleepms(2000);
 			}
 	}
 	printf("Process B Completed");
@@ -146,13 +152,13 @@ void sensorC(sid32 a, sid32 b){
 					signal(a);
 					signal(b);
 
-					int j = 0;
-					while(j<OccupiedBuffs[2]){
-						struct data* temp = (struct data*) CBuffAddr[j];
-						kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
-						j++;	
-					}
-					sleepms(3000);
+					// int j = 0;
+					// while(j<OccupiedBuffs[2]){
+					// 	struct data* temp = (struct data*) CBuffAddr[j];
+					// 	kprintf("Buffer %d Values are: \n\tfirst: %d \n",j,temp->first);
+					// 	j++;	
+					// }
+					//sleepms(3000);
 			}
 	}
 	printf("Process c Completed");
@@ -160,8 +166,13 @@ void sensorC(sid32 a, sid32 b){
 
 
 void actuatorA(sid32 a){
-	wait(a);
+	
+	while(1){
+	kprintf("Semaphore value 3: %d\n",semtab[a].scount);
+	dinkar(a);
+	kprintf("Semaphore value 4: %d\n",semtab[a].scount);
 	printf("Actuactor A");
+	}
 }
 
 
@@ -199,7 +210,7 @@ struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* ABuffAddr[]
 		APriority[max_index] = -1;
 
 		ABuffAddr[max_index] = getbuf(id);	// allocating the Buffer again
-		kprintf("\nnew buffer is allocated at %d \n",max_index);
+		//kprintf("\nnew buffer is allocated at %d \n",max_index);
 		i = 0;	
 		while(i < *buffCount){
 			APriority[i++]++;	// Increasing the APriority Number

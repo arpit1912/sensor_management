@@ -370,7 +370,10 @@ extern	pid32	enqueue(pid32, qid16);
 extern	pid32	dequeue(qid16);
 extern	pid32	dequeue_process(qid16,	int32);
 
+extern  int32 	arpit(qid16);
 /* in file ramclose.c */
+
+
 extern	devcall	ramclose(struct dentry *);
 
 /* in file raminit.c */
@@ -596,6 +599,9 @@ extern	void	userret(void);
 /* in file wait.c */
 extern	syscall	wait(sid32);
 
+extern syscall dinkar(sid32);
+
+extern syscall	shreyansh(sid32);
 /* in file wakeup.c */
 extern	void	wakeup(void);
 

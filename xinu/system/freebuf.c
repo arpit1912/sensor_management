@@ -17,7 +17,6 @@ syscall	freebuf(
 	mask = disable();
 
 	/* Extract pool ID from integer prior to buffer address */
-	printf("this works!\n");
 	bufaddr -= sizeof(bpid32);
 	poolid = *(bpid32 *)bufaddr;
 	if (poolid < 0  ||  poolid >= nbpools) {
