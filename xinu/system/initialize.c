@@ -42,7 +42,7 @@ int BPriority[SensorBBuffSize];
 char* CBuffAddr[SensorCBuffSize];
 int CPriority[SensorCBuffSize];
 
-
+int DoContext;
 /* Control sequence to reset the console colors and cusor positiion	*/
 
 #define	CONSOLE_RESET	" \033[0m\033[2J\033[;H"
@@ -184,7 +184,7 @@ static	void	sysinit()
 	/* Count the Null process as the first process in the system */
 
 	prcount = 1;
-
+	DoContext = 0;
 	/* Scheduling is not currently blocked */
 
 	Defer.ndefers = 0;

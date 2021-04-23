@@ -1,0 +1,7 @@
+{
+    "files.associations": {
+        "chrono": "cpp",
+        "mutex": "cpp",
+        "condition_variable": "c"
+    }
+}

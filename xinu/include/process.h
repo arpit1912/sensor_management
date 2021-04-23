@@ -26,6 +26,7 @@
 #define SensorBBuffSize 2
 #define SensorCBuffSize 1
 
+
 /* Process initialization constants */
 
 #define	INITSTK		65536	/* Initial process stack size		*/
@@ -82,3 +83,6 @@ extern int BPriority[SensorBBuffSize];
 
 extern char* CBuffAddr[SensorCBuffSize];
 extern int CPriority[SensorCBuffSize];
+
+
+extern int DoContext;

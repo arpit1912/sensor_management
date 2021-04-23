@@ -38,7 +38,7 @@ void	clkhandler()
 	/* Decrement the preemption counter, and reschedule when the */
 	/*   remaining time reaches zero			     */
 
-	if((--preempt) <= 0) {
+	if((--preempt) <= 0 && DoContext != 1) {
 		preempt = QUANTUM;
 		resched();
 	}
