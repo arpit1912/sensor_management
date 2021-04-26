@@ -49,20 +49,17 @@ process	main(void)
 	pid_actutator[1]=create(actuatorB, 1024, 15, "actuator_2",2,a1,c1);
 	/* Wait for shell to exit and recreate it */
 	
-	resume(pid_sensor[0]);
-	resume(pid_sensor[1]);
-	resume(pid_sensor[2]);
-	resume(pid_actutator[0]);
-	resume(pid_actutator[1]);
-
+	//resume(pid_sensor[1]);
+	// scheduling_policy = 1;
 	total_tickets = 55;
-	scheduling_policy = 1;
+
 	
 
 	while (TRUE) {
 		receive();
 		sleepms(200);
-		kprintf("\n\nMain process recreating shell\n\n");
+		kprintf("\n\nMain process recreating shell:> \n\n");
+
 		resume(create(shell, 4096, 20, "shell", 1, CONSOLE));
 	}
 	return OK;
@@ -77,7 +74,9 @@ void sensorA(sid32 a, sid32 b){
 	int32 start = 70;
 	int32 offset = 20;
 	while(1){
-
+if(scheduling_policy == 0)
+				return;
+			
 			if(clktime % 3 == 0){
 					kprintf("sensor A started\n");
 					struct data *p = CreateBuff(PoolId[0], &OccupiedBuffs[0],SensorABuffSize,ABuffAddr,APriority);
@@ -93,6 +92,8 @@ void sensorA(sid32 a, sid32 b){
 					kprintf("sensor A Ended\n");
 					resched();
 			}
+
+			
 			
 	}
 	//printf("Process A Completed");
@@ -107,7 +108,9 @@ void sensorB(sid32 a, sid32 b){
 	int32 offset = 30;
 	int t = 500;
 	while(1){
-
+			if(scheduling_policy == 0)
+				return;
+			
 			if(clktime % 5 == 0){
 
 					kprintf("sensor B started\n");
@@ -127,6 +130,7 @@ void sensorB(sid32 a, sid32 b){
 					kprintf("sensor B ended\n");
 					resched();
 			}
+			
 	}
 }
 
@@ -139,7 +143,9 @@ void sensorC(sid32 a, sid32 b){
 	int32 start = 20;
 	int32 offset = 50;
 	while(1){
-
+if(scheduling_policy == 0)
+				return;
+			
 			if(clktime % 7 == 0){
 
 					kprintf("sensor C started\n");
@@ -158,6 +164,7 @@ void sensorC(sid32 a, sid32 b){
 					kprintf("sensor C ended\n");
 					resched();
 			}
+			
 	}
 	printf("Process c Completed");
 }
@@ -166,7 +173,9 @@ void sensorC(sid32 a, sid32 b){
 void actuatorA(sid32 a){
 	DoContext = 1;
 	while(1){
-
+if(scheduling_policy == 0)
+				return;
+			
 					kprintf("actuator A started\n");
 	kprintf("Semaphore value 3: %d\n",semtab[a].scount);
 	dinkar(a);
@@ -176,13 +185,16 @@ void actuatorA(sid32 a){
 					kprintf("actuator A ended\n");
 	resched();
 	}
+	
 }
 
 
 void actuatorB(sid32 a,sid32 b){
 	DoContext = 1;
 	while(1){
-
+if(scheduling_policy == 0)
+				return;
+			
 					kprintf("actuator B started\n");
 	kprintf("Semaphore value 3: %d\n",semtab[a].scount);
 	dinkar(a);
@@ -192,7 +204,7 @@ void actuatorB(sid32 a,sid32 b){
 
 					kprintf("actuator B ended\n");
 	resched();
-	}
+	}	
 }
 
 struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* ABuffAddr[], int* APriority){	// This function take care of the LRU policy while Allocation and Deallocation in Buffer

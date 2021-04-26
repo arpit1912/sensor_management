@@ -32,7 +32,6 @@ pid32	pid_sensor[3];	/* Store Sensor pid	*/
 pid32	pid_actutator[2];	/* Store actutator pid			*/	
 int32	scheduling_policy;	/* flag for scheduling policy */	
 int32	total_tickets;	/* total_tickets */
-
 char* ABuffAddr[SensorABuffSize];
 int APriority[SensorABuffSize];
 
@@ -43,6 +42,7 @@ char* CBuffAddr[SensorCBuffSize];
 int CPriority[SensorCBuffSize];
 
 int DoContext;
+int ProcessTimer;
 /* Control sequence to reset the console colors and cusor positiion	*/
 
 #define	CONSOLE_RESET	" \033[0m\033[2J\033[;H"
@@ -69,7 +69,7 @@ void	nulluser()
 	/* Initialize the system */
 
 	sysinit();
-
+	kprintf("system initialised\n");
 	/* Output Xinu memory layout */
 	free_mem = 0;
 	for (memptr = memlist.mnext; memptr != NULL;
@@ -92,13 +92,13 @@ void	nulluser()
 		(uint32)&data, (uint32)&ebss - 1);
 
 	/* Enable interrupts */
-
+	kprintf("aaslkdjkljhfjkhjkhjdkfhsdfjhk\n");
 	enable();
-
+	kprintf("aaslkdjkljhfjkhjkhjdkfhsdfjhk\n");
 	/* Initialize the network stack and start processes */
 
 	net_init();
-
+	kprintf("aaslkdjkljhfjkhjkhjdkfhsdfjhk\n");
 	/* Create a process to finish startup and start main */
 
 	resume(create((void *)startup, INITSTK, INITPRIO,
@@ -162,6 +162,8 @@ local process	startup(void)
  */
 static	void	sysinit()
 {
+
+	
 	int32	i;
 	struct	procent	*prptr;		/* Ptr to process table entry	*/
 	struct	sentry	*semptr;	/* Ptr to semaphore table entry	*/
@@ -170,7 +172,6 @@ static	void	sysinit()
 
 	kprintf(CONSOLE_RESET);
 	kprintf("\n%s\n\n", VERSION);
-
 	/* Initialize the interrupt vectors */
 
 	initevec();
@@ -185,6 +186,7 @@ static	void	sysinit()
 
 	prcount = 1;
 	DoContext = 0;
+	ProcessTimer = 3;
 	/* Scheduling is not currently blocked */
 
 	Defer.ndefers = 0;

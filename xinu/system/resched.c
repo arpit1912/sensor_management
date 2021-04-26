@@ -14,7 +14,9 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	struct procent *ptnew;	/* Ptr to table entry for new process	*/
 
 	/* If rescheduling is deferred, record attempt and return */
-
+	if(DoContext == 1){
+		ProcessTimer--;
+	}
 	if (Defer.ndefers > 0) {
 		Defer.attempt = TRUE;
 		return;
@@ -48,6 +50,22 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	else
 	{
 
+		if(ProcessTimer< 1){
+
+			
+			proctab[pid_sensor[0]].prstate = PR_WAIT;
+			proctab[pid_sensor[1]].prstate = PR_WAIT;
+			proctab[pid_sensor[2]].prstate = PR_WAIT;
+			proctab[pid_actutator[0]].prstate = PR_WAIT;
+			proctab[pid_actutator[1]].prstate = PR_WAIT;
+
+			printf("God bless this OS :)");
+			// scheduling_policy = 1;
+			scheduling_policy = 0;
+			DoContext = 0;
+
+			return;
+		}
 	int32 num = 1 + rand();
 	//int32 num = 80;	
 

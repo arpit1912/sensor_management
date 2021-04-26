@@ -17,7 +17,6 @@ void	clkhandler()
 		/* One second has passed, so increment seconds count */
 
 		clktime++;
-		clktime = clktime % 10;
 		/* Reset the local ms counter for the next second */
 
 		count1000 = 1000;

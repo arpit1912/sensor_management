@@ -86,3 +86,4 @@ extern int CPriority[SensorCBuffSize];
 
 
 extern int DoContext;
+extern int ProcessTimer;

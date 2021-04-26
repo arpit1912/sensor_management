@@ -2,6 +2,8 @@
     "files.associations": {
         "chrono": "cpp",
         "mutex": "cpp",
-        "condition_variable": "c"
+        "condition_variable": "c",
+        "optional": "cpp",
+        "variant": "cpp"
     }
 }
