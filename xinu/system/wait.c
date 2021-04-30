@@ -39,7 +39,8 @@ syscall	wait(
 }
 
 syscall	dinkar(
-	  sid32		sem		/* Semaphore on which to wait  */
+	  sid32		sem,	/* Semaphore on which to wait  */
+	  char* msg
 	)
 {
 	intmask mask;			/* Saved interrupt mask		*/
@@ -59,6 +60,7 @@ syscall	dinkar(
 	}
 
 	if ((semptr->scount) <= 0) {		/* If caller must block	*/
+		kprintf("%s\n",msg);
 		prptr = &proctab[currpid];
 		prptr->prstate = PR_WAIT;	/* Set state to waiting	*/
 		prptr->prsem = sem;		/* Record semaphore ID	*/

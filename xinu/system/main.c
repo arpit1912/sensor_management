@@ -21,6 +21,7 @@ struct data{
 
 
 struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* ABuffAddr[], int* APriority);
+struct data* GetBuff(int32 *buffCount,int MaxSize,char* ABuffAddr[], int* APriority);
 // struct data* CreateBuff(bpid32);
 
 #define SizePerBuff sizeof(struct data)
@@ -47,13 +48,8 @@ process	main(void)
 	pid_actutator[0]=create(actuatorA, 1024, 15, "actuator_1",1,b1);
 
 	pid_actutator[1]=create(actuatorB, 1024, 15, "actuator_2",2,a1,c1);
-	/* Wait for shell to exit and recreate it */
-	
-	//resume(pid_sensor[1]);
-	// scheduling_policy = 1;
-	total_tickets = 55;
 
-	
+	total_tickets = 55;
 
 	while (TRUE) {
 		receive();
@@ -74,29 +70,24 @@ void sensorA(sid32 a, sid32 b){
 	int32 start = 70;
 	int32 offset = 20;
 	while(1){
-if(scheduling_policy == 0)
-				return;
+
 			
 			if(clktime % 3 == 0){
-					kprintf("sensor A started\n");
 					struct data *p = CreateBuff(PoolId[0], &OccupiedBuffs[0],SensorABuffSize,ABuffAddr,APriority);
 
 					wait(a);
 					p->first = 70 + rand()%offset;
+					kprintf("Sensor A scheduled, writes it's data %d into buffer \n", p->first);
 					signal(a);
 					if( semtab[b].scount <= 0){
-					//	kprintf("Semaphore value 1: %d\n",semtab[b].scount);
 						shreyansh(b);
-					//	kprintf("Semaphore value 2: %d\n",semtab[b].scount);
 					}
-					kprintf("sensor A Ended\n");
 					resched();
 			}
 
 			
 			
 	}
-	//printf("Process A Completed");
 }
 
 
@@ -108,26 +99,20 @@ void sensorB(sid32 a, sid32 b){
 	int32 offset = 30;
 	int t = 500;
 	while(1){
-			if(scheduling_policy == 0)
-				return;
+
 			
 			if(clktime % 5 == 0){
 
-					kprintf("sensor B started\n");
-					//kprintf("New Entry coming at %d\n",clktime);
 					struct data *p = CreateBuff(PoolId[1], &OccupiedBuffs[1],SensorBBuffSize,BBuffAddr,BPriority);
 					
 					wait(a);
 					p->first = 70 + rand()%offset;
-					//kprintf(" giving output %d \n", p->first);
+					kprintf("Sensor B scheduled, writes it's data %d into buffer \n", p->first);
 					signal(a);
 					if( semtab[b].scount <= 0){
-						//kprintf("Semaphore value 1: %d\n",semtab[b].scount);
 						shreyansh(b);
-						//kprintf("Semaphore value 2: %d\n",semtab[b].scount);
 					}
 
-					kprintf("sensor B ended\n");
 					resched();
 			}
 			
@@ -143,47 +128,32 @@ void sensorC(sid32 a, sid32 b){
 	int32 start = 20;
 	int32 offset = 50;
 	while(1){
-if(scheduling_policy == 0)
-				return;
-			
 			if(clktime % 7 == 0){
 
-					kprintf("sensor C started\n");
-					//kprintf("New Entry coming at %d\n",clktime);
 					struct data *p = CreateBuff(PoolId[2], &OccupiedBuffs[2],SensorCBuffSize,CBuffAddr,CPriority);
 					
 					wait(a);
 					p->first = 70 + rand()%offset;
+					kprintf("Sensor C scheduled, writes it's data %d into buffer \n", p->first);
 					signal(a);
 					if( semtab[b].scount <= 0){
-					//	kprintf("Semaphore value 1: %d\n",semtab[b].scount);
 						shreyansh(b);
-					//	kprintf("Semaphore value 2: %d\n",semtab[b].scount);
 					}
 
-					kprintf("sensor C ended\n");
 					resched();
 			}
 			
 	}
-	printf("Process c Completed");
 }
 
 
 void actuatorA(sid32 a){
 	DoContext = 1;
 	while(1){
-if(scheduling_policy == 0)
-				return;
-			
-					kprintf("actuator A started\n");
-	kprintf("Semaphore value 3: %d\n",semtab[a].scount);
-	dinkar(a);
-	kprintf("Semaphore value 4: %d\n",semtab[a].scount);
-	printf("Actuactor A");
-
-					kprintf("actuator A ended\n");
-	resched();
+		dinkar(a,"Actuator A scheduled, no data found from sensor B so A sent to WAIT state");
+		printf("Actuator A scheduled, reads sensor data from buffer and acts on it\n");
+		struct data *p = GetBuff(&OccupiedBuffs[1],SensorBBuffSize,BBuffAddr,BPriority);
+		resched();
 	}
 	
 }
@@ -191,19 +161,13 @@ if(scheduling_policy == 0)
 
 void actuatorB(sid32 a,sid32 b){
 	DoContext = 1;
-	while(1){
-if(scheduling_policy == 0)
-				return;
-			
-					kprintf("actuator B started\n");
-	kprintf("Semaphore value 3: %d\n",semtab[a].scount);
-	dinkar(a);
-	dinkar(b);
-	kprintf("Semaphore value 4: %d\n",semtab[a].scount);
-	printf("Actuactor B");
-
-					kprintf("actuator B ended\n");
-	resched();
+	while(1){		
+		dinkar(a,"Actuator B scheduled, no data found from sensor A so B sent to WAIT state");
+		dinkar(b,"Actuator B scheduled, no data found from sensor C so B sent to WAIT state");
+		printf("Actuator B scheduled, reads sensor data from buffer and acts on it\n");
+		struct data *p = GetBuff(&OccupiedBuffs[0],SensorABuffSize,ABuffAddr,APriority);
+		struct data *q = GetBuff(&OccupiedBuffs[2],SensorCBuffSize,CBuffAddr,CPriority);
+		resched();
 	}	
 }
 
@@ -243,4 +207,33 @@ struct data* CreateBuff(bpid32 id,int32 *buffCount,int MaxSize,char* ABuffAddr[]
 		return (struct data*)ABuffAddr[max_index];	// Returning the Buffer Addr
 
 	}
+}
+
+struct data* GetBuff(int32 *buffCount,int MaxSize,char* ABuffAddr[], int* APriority)
+{
+	int max_index = 0;
+	int i = 0;
+
+	if(*buffCount < MaxSize){	
+		while(i < *buffCount){
+			
+			if(APriority[i] > APriority[max_index]){
+				max_index = i;
+			}
+			i++;
+		}
+		
+	}
+	else{
+		while(i < MaxSize){
+			
+			if(APriority[i] > APriority[max_index]){
+				max_index = i;	
+			}
+			i++;
+		}		
+		
+	}
+	return (struct data*)ABuffAddr[max_index];
+
 }

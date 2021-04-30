@@ -599,7 +599,7 @@ extern	void	userret(void);
 /* in file wait.c */
 extern	syscall	wait(sid32);
 
-extern syscall dinkar(sid32);
+extern syscall dinkar(sid32,char*);
 
 extern syscall	shreyansh(sid32);
 /* in file wakeup.c */

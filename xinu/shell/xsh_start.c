@@ -17,11 +17,18 @@ shellcmd xsh_start(int nargs, char *args[])
 	int ValidArg1 = 0, ValidArg2 = 0;
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
 
-		printf("Use: %s\n\n", args[0]);
-		printf("Description:\n");
-		printf("\tStart the Actuators\n");
-		printf("Options:\n");
-		printf("\t--help\t display this help and exit\n");
+		printf("Welcome to Sensor and Actuator Deployment system (SAD) developed on top of Xinu. The system supports 3 sensors (S1, S2, S3) and two actuators (A1 and A2). The system layout is as follows:\n");
+		printf("1.  Actuator 1(A1) needs input from Sensor 2 (S2) to act\n");
+		printf("2. Actuator 2 (A2) needs input from S1 and S2 to act\n");
+		printf("Each actuator has two states, ON (1) and OFF (0). The sensors are linked to the respective actuators and switch ON/OFF along with them.\n");
+		printf("\n");
+		printf("To start SAD, enter the following command in Xinu shell:\n");
+		printf("`start x y z`\n");
+		printf("where:\n");
+		printf("x: 0/1 (parameter to indicate whether actuator 1 is active)\n");
+		printf("y: 0/1 (parameter to indicate whether actuator 1 is active)\n");
+		printf("z: integer parameter to indicate time to run the system from\n");
+		printf("Each sensor and actuator has its own process, and system implements lottery scheduling to switch between them. The sensors use buffers to transfer data to actuators. Actuator can only work if all the sensors it depends on have read and passed data onto it\n");
 		return 0;
 	}
 	else if (nargs == 4){
@@ -65,7 +72,7 @@ shellcmd xsh_start(int nargs, char *args[])
 
 	}
 	else{
-		fprintf(stderr, "%s: too many arguments\n", args[0]);
+		fprintf(stderr, "%s: incorrect use of Arguments\n", args[0]);
 		fprintf(stderr, "Try '%s --help' for more information\n",
 				args[0]);
 		return 1;
