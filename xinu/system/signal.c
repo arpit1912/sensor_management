@@ -29,6 +29,11 @@ syscall	signal(
 	restore(mask);
 	return OK;
 }
+
+/*------------------------------------------------------------------------
+ *  shreyansh -  Signal a semaphore, releasing a process if one is waiting when data in buffer is written by sensor
+ *------------------------------------------------------------------------
+ */
 syscall	shreyansh(
 	  sid32		sem		/* ID of semaphore to signal	*/
 	)

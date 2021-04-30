@@ -38,6 +38,11 @@ syscall	wait(
 	return OK;
 }
 
+/*------------------------------------------------------------------------
+ *  dinkar  -  Cause current process to wait on a semaphore if data not written in Buffer
+ *------------------------------------------------------------------------
+ */
+ 
 syscall	dinkar(
 	  sid32		sem,	/* Semaphore on which to wait  */
 	  char* msg

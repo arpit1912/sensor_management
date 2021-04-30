@@ -63,18 +63,19 @@ struct procent {		/* Entry in the process table		*/
 #define	STACKMAGIC	0x0A0AAAA9
 
 extern	struct	procent proctab[];
-extern	int32	prcount;	/* Currently active processes		*/
-extern	pid32	currpid;	/* Currently executing process		*/
-extern 	int32	scheduling_policy;
+extern	int32	prcount;		/* Currently active processes		*/
+extern	pid32	currpid;		/* Currently executing process		*/
+extern 	int32	scheduling_policy;	/* Scheduling Policy Flag	*/
 
-extern 	int32   OccupiedBuffs[3];
-extern  bpid32  PoolId[3];
-extern	pid32	pid_sensor[3];	/* Store Sensor pid			*/
+extern 	int32   OccupiedBuffs[3];	/* Store Occupied buffer Information			*/
+extern  bpid32  PoolId[3];		/* Store Buffer Pool ID			*/
+extern	pid32	pid_sensor[3];		/* Store Sensor pid			*/
 extern	pid32	pid_actutator[2];	/* Store actutator pid			*/
 extern	int32	scheduling_policy;	/* flag for scheduling policy */
-extern	int32	total_tickets;	/* total_tickets */
+extern	int32	total_tickets;		/* total_tickets */
 
-// Buff for the three sensors
+// Buffer for the three sensors A,B,C
+
 extern char* ABuffAddr[SensorABuffSize];
 extern int APriority[SensorABuffSize];
 
@@ -84,6 +85,8 @@ extern int BPriority[SensorBBuffSize];
 extern char* CBuffAddr[SensorCBuffSize];
 extern int CPriority[SensorCBuffSize];
 
-
+/* Flag For contet switch	*/
 extern int DoContext;
+
+/* Sensor Management system run Timer Flag 	*/
 extern int ProcessTimer;

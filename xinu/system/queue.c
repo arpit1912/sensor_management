@@ -51,10 +51,10 @@ pid32	dequeue(
 	return pid;
 }
 
+// Return total tickets by couting tickets for process in ready list. 
 int32 arpit(qid16 q){
 	
 	int32 ticket_count = 0;			/* ID of process removed	*/
-	//kprintf("\nIt entered \n");
 
 	if (isbadqid(q)) {
 		return SYSERR;
@@ -67,13 +67,12 @@ int32 arpit(qid16 q){
 	int16	next;			/* holds next node */
 
 	int16 last = lastid(q);
-	//kprintf("\n %d %d %d \n", last,queuetab[last].qkey,ticket_count);
+
 	curr = firstid(q);
 	while(1)
 	{
 		if(curr != last)
 			{
-				//kprintf("\n %d %d %d \n", curr,queuetab[curr].qkey,ticket_count);
 				ticket_count += queuetab[curr].qkey;
 				curr = queuetab[curr].qnext;
 			}
@@ -85,6 +84,7 @@ int32 arpit(qid16 q){
 	}
 	return ticket_count;
 }
+
 /*------------------------------------------------------------------------
  *  dequeue  -  Remove and return the process from list
  *------------------------------------------------------------------------

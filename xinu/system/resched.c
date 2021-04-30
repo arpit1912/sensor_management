@@ -27,7 +27,8 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	if(scheduling_policy == 0)
 	{
 	
-	//kprintf("\n priority Scheduling \n");	
+	// Priority scheduling on scheduling_policy flag = 0
+		
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
 		if (ptold->prprio > firstkey(readylist)) {
 			return;
@@ -47,25 +48,24 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 
 	else
 	{
+		// Priority scheduling on scheduling_policy flag != 0
 
 		// if(ProcessTimer< 1){
 
-			
 		// 	proctab[pid_sensor[0]].prstate = PR_WAIT;
 		// 	proctab[pid_sensor[1]].prstate = PR_WAIT;
 		// 	proctab[pid_sensor[2]].prstate = PR_WAIT;
 		// 	proctab[pid_actutator[0]].prstate = PR_WAIT;
 		// 	proctab[pid_actutator[1]].prstate = PR_WAIT;
-
 		// 	// scheduling_policy = 1;
 		// 	scheduling_policy = 0;
 		// 	DoContext = 0;
-
 		// 	return;
 		// }
-		int32 num = 1 + rand();
-		//int32 num = 80;	
-
+		
+		
+		// Random Number for Lottery scheduling 
+		int32 num = 1 + rand();	
 
 	if (ptold->prstate == PR_CURR) {  /* Process remains eligible */
 		
@@ -75,9 +75,9 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 		insert(currpid, readylist, ptold->prprio);
 	}
 
-	/* Force context switch to highest priority ready process */
-
+	// get total tickets by couting tickets for process in ready list. 
 	total_tickets = arpit(readylist);
+	
 	num = num % total_tickets;
 
 	kprintf("<----context switch----->\n");	
@@ -88,8 +88,6 @@ void	resched(void)		/* Assumes interrupts are disabled	*/
 	ptnew = &proctab[currpid];
 	ptnew->prstate = PR_CURR;
 	preempt = QUANTUM;		/* Reset time slice for process	*/
-
-	//kprintf("\n context switch : %s -> %s \n", ptold->prname , ptnew->prname);
 
 	ctxsw(&ptold->prstkptr, &ptnew->prstkptr);
 

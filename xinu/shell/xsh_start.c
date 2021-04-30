@@ -18,8 +18,8 @@ shellcmd xsh_start(int nargs, char *args[])
 	if (nargs == 2 && strncmp(args[1], "--help", 7) == 0) {
 
 		printf("Welcome to Sensor and Actuator Deployment system (SAD) developed on top of Xinu. The system supports 3 sensors (S1, S2, S3) and two actuators (A1 and A2). The system layout is as follows:\n");
-		printf("1.  Actuator 1(A1) needs input from Sensor 2 (S2) to act\n");
-		printf("2. Actuator 2 (A2) needs input from S1 and S2 to act\n");
+		printf("1. Actuator 1(A1) needs input from Sensor 2 (S2) to act\n");
+		printf("2. Actuator 2 (A2) needs input from Sensor 1 (S1) and Sensor 3 (S3) to act\n");
 		printf("Each actuator has two states, ON (1) and OFF (0). The sensors are linked to the respective actuators and switch ON/OFF along with them.\n");
 		printf("\n");
 		printf("To start SAD, enter the following command in Xinu shell:\n");
