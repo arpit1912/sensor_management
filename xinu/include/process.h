@@ -88,5 +88,3 @@ extern int CPriority[SensorCBuffSize];
 /* Flag For contet switch	*/
 extern int DoContext;
 
-/* Sensor Management system run Timer Flag 	*/
-extern int ProcessTimer;

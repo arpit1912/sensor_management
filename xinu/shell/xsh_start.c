@@ -31,7 +31,7 @@ shellcmd xsh_start(int nargs, char *args[])
 		printf("Each sensor and actuator has its own process, and system implements lottery scheduling to switch between them. The sensors use buffers to transfer data to actuators. Actuator can only work if all the sensors it depends on have read and passed data onto it\n");
 		return 0;
 	}
-	else if (nargs == 4){
+	else if (nargs == 3){
 
 		if(strncmp(args[1],"0",1) == 0 || strncmp(args[1],"1",1) == 0){
 			ValidArg1 = 1;
@@ -44,14 +44,11 @@ shellcmd xsh_start(int nargs, char *args[])
 		if( ValidArg1 == 1 && ValidArg2 == 1){
 			Actuator1Start = atoi(args[1]);
 			Actuator2Start = atoi(args[2]);
-			//ProcessTimer = atoi(args[3]);
 
 			scheduling_policy = 1;
-			//DoContext = 1;
 			if( Actuator1Start == 1){	
 
-				resume(pid_actutator[0]);
-				printf("this came!");			
+				resume(pid_actutator[0]);		
 				resume(pid_sensor[1]);
 			}
 			if(Actuator2Start == 1){
@@ -59,7 +56,6 @@ shellcmd xsh_start(int nargs, char *args[])
 				resume(pid_sensor[2]);
 				resume(pid_actutator[1]);
 			}
-			printf("it ended");
 			return 0;
 		}
 
